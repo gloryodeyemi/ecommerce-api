@@ -18,10 +18,7 @@ public class Role {
     @GeneratedValue
     private Long id;
 
-    private enum roles{
-        ROLE_MERCHANT,
-        ROLE_CUSTOMER
-    }
+    private ERole name;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     private Set<UserAccount> userAccount;
