@@ -17,12 +17,13 @@ public class Category {
     @GeneratedValue
     private Long id;
 
-    private enum names{
-        CATEGORY_ELECTRONICS,
-        CATEGORY_FASHION,
-        CATEGORY_STATIONARY,
-        CATEGORY_FURNITURE
-    }
+//    private enum names{
+//        CATEGORY_ELECTRONICS,
+//        CATEGORY_FASHION,
+//        CATEGORY_STATIONARY,
+//        CATEGORY_FURNITURE
+//    }
+    private String name;
 
     @OneToMany(mappedBy = "productCategory", cascade = CascadeType.ALL)
     private Set<Product> products;
