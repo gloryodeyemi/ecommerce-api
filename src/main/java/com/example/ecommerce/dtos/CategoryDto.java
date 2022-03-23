@@ -1,5 +1,6 @@
 package com.example.ecommerce.dtos;
 
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,5 +8,6 @@ import lombok.Setter;
 @Setter
 public class CategoryDto {
         private Long id;
+        @NotNull
         private String name;
 }
