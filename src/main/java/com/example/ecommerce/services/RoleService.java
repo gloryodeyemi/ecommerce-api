@@ -2,6 +2,7 @@ package com.example.ecommerce.services;
 
 import com.example.ecommerce.dtos.RoleDto;
 import com.example.ecommerce.dtos.UserDto;
+import com.example.ecommerce.exceptions.UserAlreadyExistException;
 import com.example.ecommerce.models.Role;
 import com.example.ecommerce.models.UserAccount;
 import com.example.ecommerce.repositories.RoleRepository;
@@ -15,7 +16,12 @@ public class RoleService {
     @Autowired
     RoleRepository roleRepository;
 
-    public ResponseEntity<Role> createRole(RoleDto role){
+    public ResponseEntity<Role> createRole(RoleDto role) throws  UserAlreadyExistException{
+        if (roleRepository.existsByName(role.getName())) {
+            ResponseEntity.badRequest().build();
+            throw new UserAlreadyExistException("Role already exists!");
+//            return ResponseEntity.badRequest().build();
+        }
         Role newRole = new Role();
         BeanUtils.copyProperties(role, newRole);
         return ResponseEntity.ok(roleRepository.save(newRole));
