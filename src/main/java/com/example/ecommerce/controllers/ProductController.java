@@ -19,7 +19,7 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @PostMapping
+    @PostMapping("/{userId}")
     public ResponseEntity<Product> createProduct(@RequestBody ProductDto productDto, @PathVariable Long userId) throws UserAlreadyExistException {
         return productService.createProduct(productDto, userId);
     }

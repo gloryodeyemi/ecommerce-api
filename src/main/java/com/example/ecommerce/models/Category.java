@@ -25,8 +25,8 @@ public class Category {
 //    }
     private String name;
 
-    @OneToMany(mappedBy = "productCategory", cascade = CascadeType.ALL)
-    private Set<Product> products;
+//    @OneToMany(mappedBy = "productCategory", cascade = CascadeType.ALL)
+//    private Set<Product> products;
 
     @CreationTimestamp
     private Timestamp dateCreated;
