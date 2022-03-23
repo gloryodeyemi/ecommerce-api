@@ -21,13 +21,13 @@ public class Cart {
     private UserAccount userAccount;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
-    private Set<Item> items;
+    private Set<CartItem> cartItems;
 
     @Transient
-    public Double getTotalAmount() {
-        double sum = 0D;
-        for (Item item : items) {
-            sum += item.getAmount();
+    public Double totalAmount() {
+        Double sum = 0D;
+        for (CartItem it : cartItems) {
+            sum += it.productAmount();
         }
         return sum;
     }

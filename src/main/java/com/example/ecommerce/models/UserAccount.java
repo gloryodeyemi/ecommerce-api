@@ -32,8 +32,8 @@ public class UserAccount {
 
     private String password;
 
-    @Transient
-    private String passwordConfirm;
+//    @Transient
+//    private String passwordConfirm;
 
     @CreationTimestamp
     private Timestamp dateCreated;

@@ -29,7 +29,7 @@ public class UserService {
     RoleRepository roleRepository;
 
     public ResponseEntity<UserAccount> register(UserDto user) throws UserAlreadyExistException {
-        if (userRepository.existsByEmail(user.getEmailAddress())) {
+        if (userRepository.existsByEmailAddress(user.getEmailAddress())) {
             throw new UserAlreadyExistException("Email address already exists!");
 //            return ResponseEntity.badRequest().build();
         }
@@ -37,17 +37,16 @@ public class UserService {
         BeanUtils.copyProperties(user, userAccount);
 
         // attaching user role
-        Optional<Role> role = roleRepository.findByName(user.getRole());
-        if (!role.isPresent()) {
-            throw new UserAlreadyExistException("Role not found!");
-        }
-//        role.get().setName(role.get().getName());
-        userAccount.setRole(role.get());
+//        Optional<Role> role = roleRepository.findByName(user.getRole());
+//        if (!role.isPresent()) {
+//            throw new UserAlreadyExistException("Role not found!");
+//        }
+////        role.get().setName(role.get().getName());
+//        userAccount.setRole(role.get());
 
         // encoding the password
         String pass = passwordEncoder.encode(user.getPassword());
-        String conPass = passwordEncoder.encode(user.getPasswordConfirm());
-        if (pass.equals(conPass)) {
+        if (user.getPassword().equals(user.getPasswordConfirm())) {
             userAccount.setPassword(pass);
             return ResponseEntity.ok(userRepository.save(userAccount));
         }
@@ -55,9 +54,9 @@ public class UserService {
     }
 
     public ResponseEntity login(LoginDto loginCredentials) throws UserAlreadyExistException{
-        Optional<UserAccount> user = userRepository.findByEmail(loginCredentials.getEmailAddress());
+        Optional<UserAccount> user = userRepository.findByEmailAddress(loginCredentials.getEmailAddress());
         if (user.isPresent()) {
-            if (loginCredentials.getPassword().equals(user.get().getPassword())){
+            if (passwordEncoder.matches(loginCredentials.getPassword(), user.get().getPassword())){
                 return ResponseEntity.ok(user.get());
             }
             throw new UserAlreadyExistException("Incorrect password!");

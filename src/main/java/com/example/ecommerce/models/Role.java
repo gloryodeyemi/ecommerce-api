@@ -18,7 +18,8 @@ public class Role {
     @GeneratedValue
     private Long id;
 
-    private ERole name;
+//    private ERole name;
+    private String name;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     private Set<UserAccount> userAccount;
@@ -29,4 +30,6 @@ public class Role {
     @UpdateTimestamp
     private Timestamp dateUpdated;
 
+//    public Role(String role_merchant) {
+//    }
 }
