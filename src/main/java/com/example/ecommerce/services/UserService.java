@@ -1,5 +1,6 @@
 package com.example.ecommerce.services;
 
+import com.example.ecommerce.dtos.LoginDto;
 import com.example.ecommerce.dtos.UserDto;
 import com.example.ecommerce.exceptions.UserAlreadyExistException;
 import com.example.ecommerce.models.ERole;
@@ -53,7 +54,7 @@ public class UserService {
         throw new UserAlreadyExistException("Password does not match!");
     }
 
-    public ResponseEntity login(UserDto loginCredentials) throws UserAlreadyExistException{
+    public ResponseEntity login(LoginDto loginCredentials) throws UserAlreadyExistException{
         Optional<UserAccount> user = userRepository.findByEmail(loginCredentials.getEmailAddress());
         if (user.isPresent()) {
             if (loginCredentials.getPassword().equals(user.get().getPassword())){
