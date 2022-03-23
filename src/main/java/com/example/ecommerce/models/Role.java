@@ -21,8 +21,8 @@ public class Role {
 //    private ERole name;
     private String name;
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
-    private Set<UserAccount> userAccount;
+//    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+//    private Set<UserAccount> userAccount;
 
     @CreationTimestamp
     private Timestamp dateCreated;
@@ -30,6 +30,4 @@ public class Role {
     @UpdateTimestamp
     private Timestamp dateUpdated;
 
-//    public Role(String role_merchant) {
-//    }
 }

@@ -37,12 +37,11 @@ public class UserService {
         BeanUtils.copyProperties(user, userAccount);
 
         // attaching user role
-//        Optional<Role> role = roleRepository.findByName(user.getRole());
-//        if (!role.isPresent()) {
-//            throw new UserAlreadyExistException("Role not found!");
-//        }
-////        role.get().setName(role.get().getName());
-//        userAccount.setRole(role.get());
+        Optional<Role> role = roleRepository.findByName(user.getRole());
+        if (!role.isPresent()) {
+            throw new UserAlreadyExistException("Role not found!");
+        }
+        userAccount.setRole(role.get());
 
         // encoding the password
         String pass = passwordEncoder.encode(user.getPassword());

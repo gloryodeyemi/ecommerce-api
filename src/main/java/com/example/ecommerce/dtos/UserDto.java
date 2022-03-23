@@ -20,7 +20,7 @@ public class UserDto {
     @NotNull
     private String phoneNumber;
     @NotNull
-    private ERole role;
+    private Role role;
     @NotNull
     private String password;
     @NotNull
