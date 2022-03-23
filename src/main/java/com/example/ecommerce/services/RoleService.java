@@ -18,9 +18,7 @@ public class RoleService {
 
     public ResponseEntity<Role> createRole(RoleDto role) throws  UserAlreadyExistException{
         if (roleRepository.existsByName(role.getName())) {
-            ResponseEntity.badRequest().build();
             throw new UserAlreadyExistException("Role already exists!");
-//            return ResponseEntity.badRequest().build();
         }
         Role newRole = new Role();
         BeanUtils.copyProperties(role, newRole);

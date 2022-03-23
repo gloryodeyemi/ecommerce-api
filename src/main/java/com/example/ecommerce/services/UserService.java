@@ -29,15 +29,15 @@ public class UserService {
     RoleRepository roleRepository;
 
     public ResponseEntity<UserAccount> register(UserDto user) throws UserAlreadyExistException {
+        // checking to see if user already exists
         if (userRepository.existsByEmailAddress(user.getEmailAddress())) {
             throw new UserAlreadyExistException("Email address already exists!");
-//            return ResponseEntity.badRequest().build();
         }
         UserAccount userAccount = new UserAccount();
         BeanUtils.copyProperties(user, userAccount);
 
         // attaching user role
-        Optional<Role> role = roleRepository.findByName(user.getRole());
+        Optional<Role> role = roleRepository.findById(user.getRole());
         if (!role.isPresent()) {
             throw new UserAlreadyExistException("Role not found!");
         }
@@ -47,6 +47,7 @@ public class UserService {
         String pass = passwordEncoder.encode(user.getPassword());
         if (user.getPassword().equals(user.getPasswordConfirm())) {
             userAccount.setPassword(pass);
+            // saving the user
             return ResponseEntity.ok(userRepository.save(userAccount));
         }
         throw new UserAlreadyExistException("Password does not match!");
