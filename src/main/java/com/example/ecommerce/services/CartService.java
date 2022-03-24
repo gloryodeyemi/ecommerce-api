@@ -33,6 +33,7 @@ public class CartService {
                 // create a new cart object
                 Cart cart = new Cart();
                 BeanUtils.copyProperties(addToCartDto, cart);
+                cart.setUserId(userId);
                 return ResponseEntity.ok(cartRepository.save(cart));
             }
             throw new UserAlreadyExistException("Action not allowed!");
@@ -40,11 +41,11 @@ public class CartService {
         throw new UserAlreadyExistException("Unauthorized!");
     }
 
-    public ResponseEntity<CartCost> listCartItems(Long userId) throws UserAlreadyExistException {
+    public ResponseEntity<CartCost> listCartItems(Long userId) {
        List<Cart> cartList = cartRepository.findAllByUserId(userId);
        List<CartDto> cartItems = new ArrayList<>();
        for (Cart cart: cartList){
-            CartDto cartDto = new CartDto();
+            CartDto cartDto = getDtoFromCart(cart);
             cartItems.add(cartDto);
        }
        Double totalCost = 0D;
@@ -55,5 +56,14 @@ public class CartService {
        cartCost.setCartItems(cartItems);
        cartCost.setTotalCost(totalCost);
        return ResponseEntity.ok(cartCost);
+    }
+
+    public static CartDto getDtoFromCart(Cart cart) {
+        CartDto cartDto = new CartDto();
+        cartDto.setId(cart.getId());
+        cartDto.setUserId(cart.getUserId());
+        cartDto.setProduct(cart.getProduct());
+        cartDto.setQuantity(cart.getQuantity());
+        return cartDto;
     }
 }

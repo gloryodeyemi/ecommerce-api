@@ -49,4 +49,11 @@ public class ProductService {
         }
         throw new UserAlreadyExistException("Unauthorized!");
     }
+
+    public Product getProductById(Long productId) throws UserAlreadyExistException {
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (!optionalProduct.isPresent())
+            throw new UserAlreadyExistException("Product id is invalid " + productId);
+        return optionalProduct.get();
+    }
 }

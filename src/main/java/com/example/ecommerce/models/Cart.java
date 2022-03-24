@@ -1,5 +1,6 @@
 package com.example.ecommerce.models;
 
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,10 +22,11 @@ public class Cart {
 //    private UserAccount userAccount;
 
     private Long userId;
+    @Column(name = "product_id")
     private Long productId;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Product product;
 
     private int quantity;
