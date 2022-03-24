@@ -41,21 +41,29 @@ public class CartService {
         throw new UserAlreadyExistException("Unauthorized!");
     }
 
-    public ResponseEntity<CartCost> listCartItems(Long userId) {
-       List<Cart> cartList = cartRepository.findAllByUserId(userId);
-       List<CartDto> cartItems = new ArrayList<>();
-       for (Cart cart: cartList){
+    public ResponseEntity<CartCost> listCartItems(Long userId) throws UserAlreadyExistException {
+        Optional<UserAccount> user = userRepository.findById(userId);
+        if (!user.isPresent()) {
+            throw new UserAlreadyExistException("Unauthorized!");
+        }
+        // checking to see if user is a customer
+        if (!(user.get().getRole().getName().equals("Customer"))) {
+            throw new UserAlreadyExistException("Action not allowed!");
+        }
+        List<Cart> cartList = cartRepository.findAllByUserId(userId);
+        List<CartDto> cartItems = new ArrayList<>();
+        for (Cart cart: cartList){
             CartDto cartDto = getDtoFromCart(cart);
             cartItems.add(cartDto);
-       }
-       Double totalCost = 0D;
-       for (CartDto cartDto:cartItems){
-           totalCost += (cartDto.getProduct().getPrice() * cartDto.getQuantity());
-       }
-       CartCost cartCost = new CartCost();
-       cartCost.setCartItems(cartItems);
-       cartCost.setTotalCost(totalCost);
-       return ResponseEntity.ok(cartCost);
+        }
+        Double totalCost = 0D;
+        for (CartDto cartDto:cartItems){
+            totalCost += (cartDto.getProduct().getPrice() * cartDto.getQuantity());
+        }
+        CartCost cartCost = new CartCost();
+        cartCost.setCartItems(cartItems);
+        cartCost.setTotalCost(totalCost);
+        return ResponseEntity.ok(cartCost);
     }
 
     public static CartDto getDtoFromCart(Cart cart) {

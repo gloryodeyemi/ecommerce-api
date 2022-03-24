@@ -25,7 +25,7 @@ public class CartController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<CartCost> getCartItems(@PathVariable Long userId) {
+    public ResponseEntity<CartCost> getCartItems(@PathVariable Long userId) throws UserAlreadyExistException{
         ResponseEntity<CartCost> cartCost = cartService.listCartItems(userId);
         return cartCost;
     }
