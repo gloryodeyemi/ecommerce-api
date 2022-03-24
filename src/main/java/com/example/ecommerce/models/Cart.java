@@ -17,20 +17,29 @@ public class Cart {
     @GeneratedValue
     private Long id;
 
-    @OneToOne
-    private UserAccount userAccount;
+//    @OneToOne
+//    private UserAccount userAccount;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
-    private Set<CartItem> cartItems;
+    private Long userId;
+    private Long productId;
 
-    @Transient
-    public Double totalAmount() {
-        Double sum = 0D;
-        for (CartItem it : cartItems) {
-            sum += it.productAmount();
-        }
-        return sum;
-    }
+    @ManyToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    private Product product;
+
+    private int quantity;
+
+//    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+//    private Set<CartItem> cartItems;
+//
+//    @Transient
+//    public Double totalAmount() {
+//        Double sum = 0D;
+//        for (CartItem it : cartItems) {
+//            sum += it.productAmount();
+//        }
+//        return sum;
+//    }
 
     @CreationTimestamp
     private Timestamp dateCreated;
