@@ -14,6 +14,7 @@ public class OrderDetails {
     @Id
     @GeneratedValue
     private Long id;
+    private Long userId;
 
     private Long cartId;
     private OrderStatus status;
@@ -25,7 +26,7 @@ public class OrderDetails {
     @ManyToOne
     private Product product;
 
-    private Long quantity;
+    private Integer quantity;
 
     @CreationTimestamp
     private Timestamp dateCreated;
