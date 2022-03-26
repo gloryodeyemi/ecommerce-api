@@ -27,7 +27,7 @@ public class OrderService {
         if (user.isPresent()) {
             // checking to see if user is a customer
             if (user.get().getRole().getName().equals("Customer")) {
-                // create a new cart object
+                // create a new OrderDetails object
                 OrderDetails orderDetails = new OrderDetails();
                 BeanUtils.copyProperties(newOrderDto, orderDetails);
                 orderDetails.setStatus(OrderStatus.ON_HOLD);
