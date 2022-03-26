@@ -1,5 +1,6 @@
 package com.example.ecommerce.models;
 
+import com.example.ecommerce.dtos.OrderDto;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,22 +9,19 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Set;
 
-@Entity
+//@Entity
 @Getter @Setter
-@Table(name = "order")
+//@Table(name = "order")
 public class Order {
-    @Id
-    @GeneratedValue
-    private Long id;
 
-    private Long cartId;
+//    private Long cartId;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderDetails> orderDetails;
+//    @OneToMany(mappedBy = "order")
+    private List<OrderDto> orderDetails;
 
     private Double totalPrice;
+//    private OrderStatus status;
 
 //    private String orderNum;
 //    private String status;
@@ -43,9 +41,9 @@ public class Order {
 //    @Column(nullable = false)
 //    private String customerPhone;
 
-    @CreationTimestamp
-    private Timestamp dateCreated;
-
-    @UpdateTimestamp
-    private  Timestamp dateUpdated;
+//    @CreationTimestamp
+//    private Timestamp dateCreated;
+//
+//    @UpdateTimestamp
+//    private  Timestamp dateUpdated;
 }
