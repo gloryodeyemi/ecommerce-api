@@ -24,7 +24,7 @@ public class OrderController {
 //    private ProductService productService;
 
     @PostMapping("/checkout/{userId}")
-    public ResponseEntity<OrderDetails> checkout(@RequestBody NewOrderDto newOrderDto, @PathVariable Long userId) throws UserAlreadyExistException {
+    public ResponseEntity<Order> checkout(@RequestBody NewOrderDto newOrderDto, @PathVariable Long userId) throws UserAlreadyExistException {
         return orderService.newOrder(newOrderDto, userId);
     }
 

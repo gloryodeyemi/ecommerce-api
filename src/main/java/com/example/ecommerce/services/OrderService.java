@@ -25,51 +25,71 @@ public class OrderService {
     @Autowired
     UserRepository userRepository;
 
-    public ResponseEntity<OrderDetails> newOrder(NewOrderDto newOrderDto, Long userId) throws UserAlreadyExistException {
+//    public ResponseEntity<OrderDetails> newOrder(NewOrderDto newOrderDto, Long userId) throws UserAlreadyExistException {
+//        // checking to see if user is registered
+//        Optional<UserAccount> user = userRepository.findById(userId);
+//        if (user.isPresent()) {
+//            // checking to see if user is a customer
+//            if (user.get().getRole().getName().equals("Customer")) {
+//                // create a new OrderDetails object
+//                OrderDetails orderDetails = new OrderDetails();
+//                BeanUtils.copyProperties(newOrderDto, orderDetails);
+//                orderDetails.setUserId(userId);
+//                orderDetails.setStatus(OrderStatus.ON_HOLD);
+//                return ResponseEntity.ok(orderRepository.save(orderDetails));
+//            }
+//            throw new UserAlreadyExistException("Action not allowed!");
+//        }
+//        throw new UserAlreadyExistException("Unauthorized!");
+//    }
+
+    public ResponseEntity<Order> newOrder(NewOrderDto newOrderDto, Long userId) throws UserAlreadyExistException {
         // checking to see if user is registered
         Optional<UserAccount> user = userRepository.findById(userId);
         if (user.isPresent()) {
             // checking to see if user is a customer
             if (user.get().getRole().getName().equals("Customer")) {
-                // create a new OrderDetails object
-                OrderDetails orderDetails = new OrderDetails();
-                BeanUtils.copyProperties(newOrderDto, orderDetails);
-                orderDetails.setStatus(OrderStatus.ON_HOLD);
-                return ResponseEntity.ok(orderRepository.save(orderDetails));
+                // create a new Order object
+                Order order = new Order();
+                order.setCartItems(newOrderDto.getCartCost().getCartItems());
+                order.setUserId(userId);
+                order.setStatus(OrderStatus.ON_HOLD);
+                order.setTotalCost(newOrderDto.getCartCost().getTotalCost());
+                return ResponseEntity.ok(orderRepository.save(order));
             }
             throw new UserAlreadyExistException("Action not allowed!");
         }
         throw new UserAlreadyExistException("Unauthorized!");
     }
 
-    public ResponseEntity<Order> getOrderDetails(Long userId) throws UserAlreadyExistException {
-        Optional<UserAccount> user = userRepository.findById(userId);
-        if (!user.isPresent()) {
-            throw new UserAlreadyExistException("Unauthorized!");
-        }
-        List<OrderDetails> orderDetails = orderRepository.findAllByUserId(userId);
-        List<OrderDto> orderItems = new ArrayList<>();
-        for (OrderDetails order: orderDetails){
-            OrderDto orderDto = getDtoFromOrder(order);
-            orderItems.add(orderDto);
-        }
-        Double totalCost = 0D;
-        for (OrderDto orderDto:orderItems){
-            totalCost += (orderDto.getProduct().getPrice() * orderDto.getQuantity());
-        }
-//        CartCost cartCost = new CartCost();
-        Order order = new Order();
-        order.setOrderDetails(orderItems);
-        order.setTotalPrice(totalCost);
-        return ResponseEntity.ok(order);
-    }
-
-    public static OrderDto getDtoFromOrder(OrderDetails orderDetails) {
-        OrderDto orderDto = new OrderDto();
-        orderDto.setId(orderDetails.getId());
-        orderDto.setCartId(orderDetails.getCartId());
-        orderDto.setProduct(orderDetails.getProduct());
-        orderDto.setQuantity(orderDetails.getQuantity());
-        return orderDto;
-    }
+//    public ResponseEntity<Order> getOrderDetails(Long userId) throws UserAlreadyExistException {
+//        Optional<UserAccount> user = userRepository.findById(userId);
+//        if (!user.isPresent()) {
+//            throw new UserAlreadyExistException("Unauthorized!");
+//        }
+//        List<OrderDetails> orderDetails = orderRepository.findAllByUserId(userId);
+//        List<OrderDto> orderItems = new ArrayList<>();
+//        for (OrderDetails order: orderDetails){
+//            OrderDto orderDto = getDtoFromOrder(order);
+//            orderItems.add(orderDto);
+//        }
+//        Double totalCost = 0D;
+//        for (OrderDto orderDto:orderItems){
+//            totalCost += (orderDto.getProduct().getPrice() * orderDto.getQuantity());
+//        }
+////        CartCost cartCost = new CartCost();
+//        Order order = new Order();
+//        order.setOrderDetails(orderItems);
+//        order.setTotalPrice(totalCost);
+//        return ResponseEntity.ok(order);
+//    }
+//
+//    public static OrderDto getDtoFromOrder(OrderDetails orderDetails) {
+//        OrderDto orderDto = new OrderDto();
+//        orderDto.setId(orderDetails.getId());
+//        orderDto.setCartId(orderDetails.getCartId());
+//        orderDto.setProduct(orderDetails.getProduct());
+//        orderDto.setQuantity(orderDetails.getQuantity());
+//        return orderDto;
+//    }
 }

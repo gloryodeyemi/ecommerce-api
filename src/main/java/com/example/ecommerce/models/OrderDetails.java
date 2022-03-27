@@ -20,13 +20,9 @@ public class OrderDetails {
     private OrderStatus status;
 
 //    @ManyToOne
-//    @JoinColumn(name = "order_id")
-//    private Order order;
-
-    @ManyToOne
-    private Product product;
-
-    private Integer quantity;
+//    private Product product;
+//
+//    private Integer quantity;
 
     @CreationTimestamp
     private Timestamp dateCreated;
