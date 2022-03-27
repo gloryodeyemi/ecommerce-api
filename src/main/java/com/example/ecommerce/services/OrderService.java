@@ -6,6 +6,8 @@ import com.example.ecommerce.dtos.NewOrderDto;
 import com.example.ecommerce.dtos.OrderDto;
 import com.example.ecommerce.exceptions.UserAlreadyExistException;
 import com.example.ecommerce.models.*;
+import com.example.ecommerce.repositories.CartCostRepository;
+import com.example.ecommerce.repositories.CartRepository;
 import com.example.ecommerce.repositories.OrderRepository;
 import com.example.ecommerce.repositories.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -24,6 +26,12 @@ public class OrderService {
 
     @Autowired
     UserRepository userRepository;
+
+//    @Autowired
+//    CartRepository cartRepository;
+
+    @Autowired
+    CartCostRepository cartCostRepository;
 
 //    public ResponseEntity<OrderDetails> newOrder(NewOrderDto newOrderDto, Long userId) throws UserAlreadyExistException {
 //        // checking to see if user is registered
@@ -49,13 +57,19 @@ public class OrderService {
         if (user.isPresent()) {
             // checking to see if user is a customer
             if (user.get().getRole().getName().equals("Customer")) {
-                // create a new Order object
-                Order order = new Order();
-                order.setCartItems(newOrderDto.getCartCost().getCartItems());
-                order.setUserId(userId);
-                order.setStatus(OrderStatus.ON_HOLD);
-                order.setTotalCost(newOrderDto.getCartCost().getTotalCost());
-                return ResponseEntity.ok(orderRepository.save(order));
+//                CartDto cart = cartRepository.findById(newOrderDto.getCartCost());
+//                List<Cart> cartList = newOrderDto.getCartCost();
+                Optional<CartCost> cartCost = cartCostRepository.findById(newOrderDto.getCartCost());
+                if (cartCost.isPresent()){
+                    // create a new Order object
+                    Order newOrder = new Order();
+                    newOrder.setCartItems(cartCost.get().getCartItems());
+                    newOrder.setUserId(userId);
+                    newOrder.setStatus(OrderStatus.ON_HOLD);
+                    newOrder.setTotalCost(cartCost.get().getTotalCost());
+                    return ResponseEntity.ok(orderRepository.save(newOrder));
+                }
+                return ResponseEntity.notFound().build();
             }
             throw new UserAlreadyExistException("Action not allowed!");
         }

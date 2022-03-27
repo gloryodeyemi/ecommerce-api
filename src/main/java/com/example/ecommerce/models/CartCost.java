@@ -9,7 +9,11 @@ import javax.persistence.*;
 import java.util.List;
 
 @Getter @Setter
+//@Entity
 public class CartCost {
+    @Id
+    @GeneratedValue
+    private Long id;
     private List<CartDto> cartItems;
     private Double totalCost;
 }
