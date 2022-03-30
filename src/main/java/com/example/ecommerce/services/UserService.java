@@ -7,6 +7,7 @@ import com.example.ecommerce.models.Cart;
 import com.example.ecommerce.models.ERole;
 import com.example.ecommerce.models.Role;
 import com.example.ecommerce.models.UserAccount;
+import com.example.ecommerce.repositories.CartRepository;
 import com.example.ecommerce.repositories.RoleRepository;
 import com.example.ecommerce.repositories.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +30,9 @@ public class UserService {
     @Autowired
     RoleRepository roleRepository;
 
+    @Autowired
+    CartRepository cartRepository;
+
     public ResponseEntity<UserAccount> register(UserDto user) throws UserAlreadyExistException {
         // checking to see if user already exists
         if (userRepository.existsByEmailAddress(user.getEmailAddress())) {
@@ -46,7 +50,8 @@ public class UserService {
         // creating a cart if user is a customer
         if (role.get().getName() == "Customer"){
             Cart cart = new Cart();
-            userAccount.setCart(cart);
+            cartRepository.save(cart);
+            userAccount.setCartId(cart.getId());
         }
 
         // encoding the password

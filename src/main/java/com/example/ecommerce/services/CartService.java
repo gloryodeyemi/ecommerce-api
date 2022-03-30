@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -69,13 +70,19 @@ public class CartService {
     }
 
     public ResponseEntity<Cart> getCartDetails(Long userId) {
-        Cart cart = cartRepository.findCartByUserId(userId);
-        Double sum = 0D;
-        for (CartItems cartIt: cart.getCartItems()){
-            sum += (cartIt.getProduct().getPrice() * cartIt.getQuantity());
+        Optional<Cart> cart = cartRepository.findCartByUserId(userId);
+        if (cart.isPresent()){
+            Double sum = 0D;
+            List<CartItems> cartItemsList = cart.get().getCartItems();
+            if (!(cartItemsList == null)){
+                for (CartItems cartIt: cartItemsList){
+                    sum += (cartIt.getProduct().getPrice() * cartIt.getQuantity());
+                }
+            }
+            cart.get().setTotalCost(sum);
+            return ResponseEntity.ok(cart.get());
         }
-        cart.setTotalCost(sum);
-        return ResponseEntity.ok(cart);
+        return ResponseEntity.notFound().build();
     }
 
 //    public ResponseEntity<Cart> addToCart(AddToCartDto addToCartDto, Long userId) throws UserAlreadyExistException {

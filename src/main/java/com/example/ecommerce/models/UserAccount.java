@@ -30,8 +30,8 @@ public class UserAccount {
     @ManyToOne
     private Role role;
 
-    @OneToOne
-    private Cart cart;
+//    @OneToOne
+    private Long cartId;
 
     private String password;
 

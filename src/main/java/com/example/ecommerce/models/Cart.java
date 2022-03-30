@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -19,7 +20,7 @@ public class Cart {
     private Long userId;
 
     @OneToMany
-    private Set<CartItems> cartItems;
+    private List<CartItems> cartItems;
 
     private Double totalCost;
 
