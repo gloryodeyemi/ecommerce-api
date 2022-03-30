@@ -19,7 +19,7 @@ public class Cart {
 
     private Long userId;
 
-    @OneToMany
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<CartItems> cartItems;
 
     private Double totalCost;

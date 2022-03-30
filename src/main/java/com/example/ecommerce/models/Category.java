@@ -1,5 +1,6 @@
 package com.example.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,8 +26,9 @@ public class Category {
 //    }
     private String name;
 
-//    @OneToMany(mappedBy = "productCategory", cascade = CascadeType.ALL)
-//    private Set<Product> products;
+    @JsonIgnore
+    @OneToMany(mappedBy = "productCategory", cascade = CascadeType.ALL)
+    private Set<Product> products;
 
     @CreationTimestamp
     private Timestamp dateCreated;

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,11 +61,12 @@ public class CartService {
                     // add item to cart
                     CartItems cartItems = new CartItems();
                     BeanUtils.copyProperties(addToCartDto, cartItems);
+                    cartItems.setCart(cart.get());
                     Optional<Product> product = productRepository.findProductById(addToCartDto.getProductId());
                     if (product.isPresent()){
                         cartItems.setProduct(product.get());
                         cartItemRepository.save(cartItems);
-                        cart.get().getCartItems().add(cartItems);
+//                        cart.get().getCartItems().add(cartItems);
                         return ResponseEntity.ok(cartItems);
                     }
                     return ResponseEntity.notFound().build();
