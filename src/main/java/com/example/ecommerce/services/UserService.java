@@ -57,7 +57,7 @@ public class UserService {
             if (role.get().getName().equals("Customer")){
                 Cart cart = new Cart();
                 cartRepository.save(cart);
-                userAccount.setCartId(cart.getId());
+                userAccount.setCart(cart);
                 cart.setUserId(userAccount.getId());
             }
             return ResponseEntity.ok(userAccount);

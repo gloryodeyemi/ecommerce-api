@@ -1,6 +1,7 @@
 package com.example.ecommerce.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,10 +20,11 @@ public class CartItems {
 //    private Long cartId;
 
     @ManyToOne
-    @JsonIgnore
+    @JsonIgnoreProperties({"userId", "cartItems", "totalCost", "dateCreated", "dateUpdated"})
     private Cart cart;
 
     @OneToOne
+    @JsonIgnoreProperties({"id", "productDescription", "productCategory", "dateCreated", "dateUpdated"})
     private Product product;
     private Integer quantity;
 

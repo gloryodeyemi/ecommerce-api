@@ -1,5 +1,6 @@
 package com.example.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -30,8 +31,9 @@ public class UserAccount {
     @ManyToOne
     private Role role;
 
-//    @OneToOne
-    private Long cartId;
+    @OneToOne
+    @JsonIgnoreProperties({"userId", "cartItems", "totalCost", "dateCreated", "dateUpdated"})
+    private Cart cart;
 
     private String password;
 
