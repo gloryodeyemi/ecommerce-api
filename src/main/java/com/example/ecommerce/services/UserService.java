@@ -3,6 +3,7 @@ package com.example.ecommerce.services;
 import com.example.ecommerce.dtos.LoginDto;
 import com.example.ecommerce.dtos.UserDto;
 import com.example.ecommerce.exceptions.UserAlreadyExistException;
+import com.example.ecommerce.models.Cart;
 import com.example.ecommerce.models.ERole;
 import com.example.ecommerce.models.Role;
 import com.example.ecommerce.models.UserAccount;
@@ -42,6 +43,11 @@ public class UserService {
             throw new UserAlreadyExistException("Role not found!");
         }
         userAccount.setRole(role.get());
+        // creating a cart if user is a customer
+        if (role.get().getName() == "Customer"){
+            Cart cart = new Cart();
+            userAccount.setCart(cart);
+        }
 
         // encoding the password
         String pass = passwordEncoder.encode(user.getPassword());

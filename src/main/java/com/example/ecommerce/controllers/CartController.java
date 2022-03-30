@@ -3,7 +3,6 @@ package com.example.ecommerce.controllers;
 import com.example.ecommerce.dtos.AddToCartDto;
 import com.example.ecommerce.exceptions.UserAlreadyExistException;
 import com.example.ecommerce.models.Cart;
-import com.example.ecommerce.models.CartCost;
 import com.example.ecommerce.services.CartService;
 import com.example.ecommerce.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +18,14 @@ public class CartController {
     @Autowired
     private ProductService productService;
 
-    @PostMapping("/add/{userId}")
-    public ResponseEntity<Cart> addToCart(@RequestBody AddToCartDto addToCartDto, @PathVariable Long userId) throws UserAlreadyExistException {
-        return cartService.addToCart(addToCartDto, userId);
-    }
-
-    @GetMapping("/{userId}")
-    public ResponseEntity<CartCost> getCartItems(@PathVariable Long userId) throws UserAlreadyExistException{
-        ResponseEntity<CartCost> cartCost = cartService.listCartItems(userId);
-        return cartCost;
-    }
+//    @PostMapping("/add/{userId}")
+//    public ResponseEntity<Cart> addToCart(@RequestBody AddToCartDto addToCartDto, @PathVariable Long userId) throws UserAlreadyExistException {
+//        return cartService.addToCart(addToCartDto, userId);
+//    }
+//
+//    @GetMapping("/{userId}")
+//    public ResponseEntity<CartCost> getCartItems(@PathVariable Long userId) throws UserAlreadyExistException{
+//        ResponseEntity<CartCost> cartCost = cartService.listCartItems(userId);
+//        return cartCost;
+//    }
 }

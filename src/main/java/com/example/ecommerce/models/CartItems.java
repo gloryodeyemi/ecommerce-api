@@ -7,26 +7,21 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Set;
 
 @Entity
 @Getter @Setter
-public class Cart {
+public class CartItems {
     @Id
     @GeneratedValue
     private Long id;
 
-    private Long userId;
-
-    @OneToMany
-    private Set<CartItems> cartItems;
-
-    private Double totalCost;
+    private Long cartId;
+    @OneToOne
+    private Product product;
+    private Integer quantity;
 
     @CreationTimestamp
     private Timestamp dateCreated;
-
     @UpdateTimestamp
     private Timestamp dateUpdated;
-
 }

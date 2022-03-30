@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
+        http.headers().frameOptions().disable();
         http.csrf().disable().authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers(HttpMethod.POST,"/user/register").permitAll()
@@ -26,7 +27,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST,"/order/checkout/{userId}").permitAll()
                 .antMatchers(HttpMethod.GET,"/order/{userId}").permitAll()
 //                .antMatchers(HttpMethod.GET,"/exploreCourse").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().permitAll();
     }
 
 }

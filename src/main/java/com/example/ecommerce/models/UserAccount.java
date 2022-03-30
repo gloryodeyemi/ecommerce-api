@@ -30,6 +30,9 @@ public class UserAccount {
     @ManyToOne
     private Role role;
 
+    @OneToOne
+    private Cart cart;
+
     private String password;
 
 //    @Transient
