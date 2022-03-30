@@ -47,19 +47,20 @@ public class UserService {
             throw new UserAlreadyExistException("Role not found!");
         }
         userAccount.setRole(role.get());
-        // creating a cart if user is a customer
-        if (role.get().getName() == "Customer"){
-            Cart cart = new Cart();
-            cartRepository.save(cart);
-            userAccount.setCartId(cart.getId());
-        }
-
         // encoding the password
         String pass = passwordEncoder.encode(user.getPassword());
         if (user.getPassword().equals(user.getPasswordConfirm())) {
             userAccount.setPassword(pass);
             // saving the user
-            return ResponseEntity.ok(userRepository.save(userAccount));
+            userRepository.save(userAccount);
+            // attaching a cart if user is a customer
+            if (role.get().getName().equals("Customer")){
+                Cart cart = new Cart();
+                cartRepository.save(cart);
+                userAccount.setCartId(cart.getId());
+                cart.setUserId(userAccount.getId());
+            }
+            return ResponseEntity.ok(userAccount);
         }
         throw new UserAlreadyExistException("Password does not match!");
     }

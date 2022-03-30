@@ -54,15 +54,22 @@ public class CartService {
         if (user.isPresent()) {
             // checking to see if user is a customer
             if (user.get().getRole().getName().equals("Customer")) {
-                // add item to cart
-                CartItems cartItems = new CartItems();
-                BeanUtils.copyProperties(addToCartDto, cartItems);
-                Optional<Product> product = productRepository.findProductById(addToCartDto.getProductId());
-                if (product.isPresent()){
-                    cartItems.setProduct(product.get());
-                    return ResponseEntity.ok(cartItemRepository.save(cartItems));
+                // checking to see if cart exists
+                Optional<Cart> cart = cartRepository.findCartById(addToCartDto.getCartId());
+                if (cart.isPresent()) {
+                    // add item to cart
+                    CartItems cartItems = new CartItems();
+                    BeanUtils.copyProperties(addToCartDto, cartItems);
+                    Optional<Product> product = productRepository.findProductById(addToCartDto.getProductId());
+                    if (product.isPresent()){
+                        cartItems.setProduct(product.get());
+                        cartItemRepository.save(cartItems);
+                        cart.get().getCartItems().add(cartItems);
+                        return ResponseEntity.ok(cartItems);
+                    }
+                    return ResponseEntity.notFound().build();
                 }
-                return ResponseEntity.notFound().build();
+                throw new UserAlreadyExistException("Cart not found");
             }
             throw new UserAlreadyExistException("Action not allowed!");
         }
@@ -71,6 +78,22 @@ public class CartService {
 
     public ResponseEntity<Cart> getCartDetails(Long userId) {
         Optional<Cart> cart = cartRepository.findCartByUserId(userId);
+        if (cart.isPresent()){
+            Double sum = 0D;
+            List<CartItems> cartItemsList = cart.get().getCartItems();
+            if (!(cartItemsList == null)){
+                for (CartItems cartIt: cartItemsList){
+                    sum += (cartIt.getProduct().getPrice() * cartIt.getQuantity());
+                }
+            }
+            cart.get().setTotalCost(sum);
+            return ResponseEntity.ok(cart.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    public ResponseEntity<Cart> getCart(Long id) {
+        Optional<Cart> cart = cartRepository.findCartById(id);
         if (cart.isPresent()){
             Double sum = 0D;
             List<CartItems> cartItemsList = cart.get().getCartItems();
