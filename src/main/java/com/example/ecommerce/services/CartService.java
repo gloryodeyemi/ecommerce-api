@@ -33,22 +33,6 @@ public class CartService {
     @Autowired
     ProductRepository productRepository;
 
-//    public ResponseEntity<Cart> createCart(CartDto cartDto, Long userId) throws UserAlreadyExistException {
-//        // checking to see if user is registered
-//        Optional<UserAccount> user = userRepository.findById(userId);
-//        if (user.isPresent()) {
-//            // checking to see if user is a customer
-//            if (user.get().getRole().getName().equals("Customer")) {
-//                // add item to cart
-//                Cart cart = new Cart();
-//                cart.setUserId(userId);
-//                return ResponseEntity.ok(cartRepository.save(cart));
-//            }
-//            throw new UserAlreadyExistException("Action not allowed!");
-//        }
-//        throw new UserAlreadyExistException("Unauthorized!");
-//    }
-
     public ResponseEntity<CartItems> addToCart(AddToCartDto addToCartDto, Long userId) throws UserAlreadyExistException {
         // checking to see if user is registered
         Optional<UserAccount> user = userRepository.findById(userId);
@@ -58,18 +42,24 @@ public class CartService {
                 // checking to see if cart exists
                 Optional<Cart> cart = cartRepository.findCartById(addToCartDto.getCartId());
                 if (cart.isPresent()) {
-                    // add item to cart
-                    CartItems cartItems = new CartItems();
-                    BeanUtils.copyProperties(addToCartDto, cartItems);
-                    cartItems.setCart(cart.get());
-                    Optional<Product> product = productRepository.findProductById(addToCartDto.getProductId());
-                    if (product.isPresent()){
-                        cartItems.setProduct(product.get());
-                        cartItemRepository.save(cartItems);
+                    // check if user cart id matches cart id
+                    if (addToCartDto.getCartId().equals(user.get().getCart().getId())){
+                        // attach user id to cart
+                        cart.get().setUserId(userId);
+                        // add item to cart
+                        CartItems cartItems = new CartItems();
+                        BeanUtils.copyProperties(addToCartDto, cartItems);
+                        cartItems.setCart(cart.get());
+                        Optional<Product> product = productRepository.findProductById(addToCartDto.getProductId());
+                        if (product.isPresent()){
+                            cartItems.setProduct(product.get());
+                            cartItemRepository.save(cartItems);
 //                        cart.get().getCartItems().add(cartItems);
-                        return ResponseEntity.ok(cartItems);
+                            return ResponseEntity.ok(cartItems);
+                        }
+                        return ResponseEntity.notFound().build();
                     }
-                    return ResponseEntity.notFound().build();
+                    throw new UserAlreadyExistException("Action not allowed");
                 }
                 throw new UserAlreadyExistException("Cart not found");
             }
@@ -78,7 +68,7 @@ public class CartService {
         throw new UserAlreadyExistException("Unauthorized!");
     }
 
-    public ResponseEntity<Cart> getCartDetails(Long userId) {
+    public ResponseEntity<Cart> getCartByUserId(Long userId) {
         Optional<Cart> cart = cartRepository.findCartByUserId(userId);
         if (cart.isPresent()){
             Double sum = 0D;
@@ -94,7 +84,7 @@ public class CartService {
         return ResponseEntity.notFound().build();
     }
 
-    public ResponseEntity<Cart> getCart(Long id) {
+    public ResponseEntity<Cart> getCartById(Long id) {
         Optional<Cart> cart = cartRepository.findCartById(id);
         if (cart.isPresent()){
             Double sum = 0D;
@@ -109,55 +99,4 @@ public class CartService {
         }
         return ResponseEntity.notFound().build();
     }
-
-//    public ResponseEntity<Cart> addToCart(AddToCartDto addToCartDto, Long userId) throws UserAlreadyExistException {
-//        // checking to see if user is registered
-//        Optional<UserAccount> user = userRepository.findById(userId);
-//        if (user.isPresent()) {
-//            // checking to see if user is a customer
-//            if (user.get().getRole().getName().equals("Customer")) {
-//                // create a new cart object
-//                Cart cart = new Cart();
-//                BeanUtils.copyProperties(addToCartDto, cart);
-//                cart.setUserId(userId);
-//                return ResponseEntity.ok(cartRepository.save(cart));
-//            }
-//            throw new UserAlreadyExistException("Action not allowed!");
-//        }
-//        throw new UserAlreadyExistException("Unauthorized!");
-//    }
-//
-//    public ResponseEntity<CartCost> listCartItems(Long userId) throws UserAlreadyExistException {
-//        Optional<UserAccount> user = userRepository.findById(userId);
-//        if (!user.isPresent()) {
-//            throw new UserAlreadyExistException("Unauthorized!");
-//        }
-//        // checking to see if user is a customer
-//        if (!(user.get().getRole().getName().equals("Customer"))) {
-//            throw new UserAlreadyExistException("Action not allowed!");
-//        }
-//        List<Cart> cartList = cartRepository.findAllByUserId(userId);
-//        List<CartDto> cartItems = new ArrayList<>();
-//        for (Cart cart: cartList){
-//            CartDto cartDto = getDtoFromCart(cart);
-//            cartItems.add(cartDto);
-//        }
-//        Double totalCost = 0D;
-//        for (CartDto cartDto:cartItems){
-//            totalCost += (cartDto.getProduct().getPrice() * cartDto.getQuantity());
-//        }
-//        CartCost cartCost = new CartCost();
-//        cartCost.setCartItems(cartItems);
-//        cartCost.setTotalCost(totalCost);
-//        return ResponseEntity.ok(cartCost);
-//    }
-//
-//    public static CartDto getDtoFromCart(Cart cart) {
-//        CartDto cartDto = new CartDto();
-//        cartDto.setId(cart.getId());
-//        cartDto.setUserId(cart.getUserId());
-//        cartDto.setProduct(cart.getProduct());
-//        cartDto.setQuantity(cart.getQuantity());
-//        return cartDto;
-//    }
 }

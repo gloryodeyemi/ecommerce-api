@@ -1,5 +1,6 @@
 package com.example.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -17,9 +18,13 @@ public class Cart {
     @GeneratedValue
     private Long id;
 
+//    @OneToOne
+//    @JsonIgnoreProperties({"firstName", "lastName", "emailAddress", "phoneNumber", "role", "cart", "password", "dateCreated", "dateUpdated"})
+//    private UserAccount user;
     private Long userId;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"cart", "dateCreated", "dateUpdated"})
     private List<CartItems> cartItems;
 
     private Double totalCost;

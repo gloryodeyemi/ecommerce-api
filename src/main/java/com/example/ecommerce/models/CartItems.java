@@ -17,8 +17,6 @@ public class CartItems {
     @GeneratedValue
     private Long id;
 
-//    private Long cartId;
-
     @ManyToOne
     @JsonIgnoreProperties({"userId", "cartItems", "totalCost", "dateCreated", "dateUpdated"})
     private Cart cart;

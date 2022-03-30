@@ -26,11 +26,11 @@ public class CartController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<Cart> getCartItems(@PathVariable Long userId) throws UserAlreadyExistException{
-        return cartService.getCartDetails(userId);
+        return cartService.getCartByUserId(userId);
     }
 
     @GetMapping("/cart-id/{cartId}")
     public ResponseEntity<Cart> getCart(@PathVariable Long cartId) throws UserAlreadyExistException{
-        return cartService.getCart(cartId);
+        return cartService.getCartById(cartId);
     }
 }

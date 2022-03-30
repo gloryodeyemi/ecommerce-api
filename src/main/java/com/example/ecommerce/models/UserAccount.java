@@ -29,6 +29,7 @@ public class UserAccount {
     private String phoneNumber;
 
     @ManyToOne
+    @JsonIgnoreProperties({"id", "dateCreated", "dateUpdated"})
     private Role role;
 
     @OneToOne
