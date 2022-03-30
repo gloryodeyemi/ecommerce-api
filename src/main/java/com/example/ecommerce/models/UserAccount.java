@@ -1,5 +1,6 @@
 package com.example.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,8 +33,9 @@ public class UserAccount {
     @JsonIgnoreProperties({"id", "dateCreated", "dateUpdated"})
     private Role role;
 
-    @OneToOne
-    @JsonIgnoreProperties({"userId", "cartItems", "totalCost", "dateCreated", "dateUpdated"})
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+//    @JsonIgnoreProperties({"userId", "cartItems", "totalCost", "dateCreated", "dateUpdated"})
+    @JsonIgnore
     private Cart cart;
 
     private String password;

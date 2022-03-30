@@ -18,10 +18,11 @@ public class Cart {
     @GeneratedValue
     private Long id;
 
-//    @OneToOne
-//    @JsonIgnoreProperties({"firstName", "lastName", "emailAddress", "phoneNumber", "role", "cart", "password", "dateCreated", "dateUpdated"})
-//    private UserAccount user;
-    private Long userId;
+    @OneToOne
+//    @JoinColumn(name = "_id", referencedColumnName = "id")
+    @JsonIgnoreProperties({"firstName", "lastName", "emailAddress", "phoneNumber", "role", "cart", "password", "dateCreated", "dateUpdated"})
+    private UserAccount user;
+//    private Long userId;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     @JsonIgnoreProperties({"cart", "dateCreated", "dateUpdated"})

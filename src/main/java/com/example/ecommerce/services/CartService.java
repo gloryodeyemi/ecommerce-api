@@ -45,7 +45,7 @@ public class CartService {
                     // check if user cart id matches cart id
                     if (addToCartDto.getCartId().equals(user.get().getCart().getId())){
                         // attach user id to cart
-                        cart.get().setUserId(userId);
+//                        cart.get().setUserId(userId);
                         // add item to cart
                         CartItems cartItems = new CartItems();
                         BeanUtils.copyProperties(addToCartDto, cartItems);
