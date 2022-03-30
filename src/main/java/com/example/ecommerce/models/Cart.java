@@ -1,5 +1,6 @@
 package com.example.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +30,10 @@ public class Cart {
     private List<CartItems> cartItems;
 
     private Double totalCost;
+
+    @OneToOne(mappedBy = "cart", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Order order;
 
     @CreationTimestamp
     private Timestamp dateCreated;

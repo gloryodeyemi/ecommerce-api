@@ -44,8 +44,6 @@ public class CartService {
                 if (cart.isPresent()) {
                     // check if user cart id matches cart id
                     if (addToCartDto.getCartId().equals(user.get().getCart().getId())){
-                        // attach user id to cart
-//                        cart.get().setUserId(userId);
                         // add item to cart
                         CartItems cartItems = new CartItems();
                         BeanUtils.copyProperties(addToCartDto, cartItems);
@@ -54,7 +52,6 @@ public class CartService {
                         if (product.isPresent()){
                             cartItems.setProduct(product.get());
                             cartItemRepository.save(cartItems);
-//                        cart.get().getCartItems().add(cartItems);
                             return ResponseEntity.ok(cartItems);
                         }
                         return ResponseEntity.notFound().build();

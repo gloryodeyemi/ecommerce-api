@@ -1,11 +1,15 @@
 package com.example.ecommerce.controllers;
 
+import com.example.ecommerce.dtos.AddToCartDto;
+import com.example.ecommerce.dtos.CheckoutDto;
+import com.example.ecommerce.exceptions.UserAlreadyExistException;
+import com.example.ecommerce.models.CartItems;
 import com.example.ecommerce.models.Order;
 import com.example.ecommerce.services.OrderService;
 import com.example.ecommerce.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +17,16 @@ import java.util.List;
 @RestController
 @RequestMapping("order")
 public class OrderController {
-    List<Order> orderList = new ArrayList<>();
+//    List<Order> orderList = new ArrayList<>();
 
     @Autowired
     private OrderService orderService;
 
     @Autowired
     private ProductService productService;
+
+    @PostMapping("/checkout")
+    public ResponseEntity<Order> addToCart(@RequestBody CheckoutDto checkoutDto) throws UserAlreadyExistException {
+        return orderService.userCheckout(checkoutDto);
+    }
 }
