@@ -28,61 +28,52 @@ public class OrderService {
     UserRepository userRepository;
 
     public ResponseEntity<Order> userCheckout(CheckoutDto checkoutDto) throws UserAlreadyExistException {
-        // checking to see if user is registered
-        Optional<UserAccount> user = userRepository.findById(checkoutDto.getUserId());
-        if (user.isPresent()) {
-            // checking to see if user is a customer
-            if (user.get().getRole().getName().equals("Customer")) {
-                // checking to see if cart exists
-                Optional<Cart> cart = cartRepository.findCartById(checkoutDto.getCartId());
-                if (cart.isPresent()) {
-                    // check if user cart id matches cart id
-                    if (cart.get().getId().equals(user.get().getCart().getId())){
-                        // checkout items in cart
-                        Order newOrder = new Order();
-                        newOrder.setCart(cart.get().getUser().getCart());
-                        newOrder.setOrderStatus(OrderStatus.ON_HOLD);
-                        Double sum = 0D;
-                        List<CartItems> cartItemsList = cart.get().getUser().getCart().getCartItems();
-                        if (!(cartItemsList == null)){
-                            for (CartItems cartIt: cartItemsList){
-                                sum += (cartIt.getProduct().getPrice() * cartIt.getQuantity());
-                            }
+        UserAccount user =  validateUser(checkoutDto.getUserId()).getBody();
+        // checking to see if user is a customer
+        if (user.getRole().getName().equals("Customer")) {
+            // checking to see if cart exists
+            Optional<Cart> cart = cartRepository.findCartById(checkoutDto.getCartId());
+            if (cart.isPresent()) {
+                // check if user cart id matches cart id
+                if (cart.get().getId().equals(user.getCart().getId())){
+                    // checkout items in cart
+                    Order newOrder = new Order();
+                    newOrder.setCart(cart.get().getUser().getCart());
+                    newOrder.setOrderStatus(OrderStatus.ON_HOLD);
+                    Double sum = 0D;
+                    List<CartItems> cartItemsList = cart.get().getUser().getCart().getCartItems();
+                    if (!(cartItemsList == null)){
+                        for (CartItems cartIt: cartItemsList){
+                            sum += (cartIt.getProduct().getPrice() * cartIt.getQuantity());
                         }
-//                        cart.get().setTotalCost(sum);
-                        newOrder.getCart().setTotalCost(sum);
-                        orderRepository.save(newOrder);
-//                        cartRepository.findCartById(checkoutDto.getCartId()).get().getCartItems().clear();
-//                        cart.get().setCartItems(null);
-//                        cart.get().getCartItems().clear();
-//                        user.get().getCart().getCartItems().clear();
-                        return ResponseEntity.ok(newOrder);
                     }
-                    throw new UserAlreadyExistException("Action not allowed");
+                    newOrder.getCart().setTotalCost(sum);
+                    orderRepository.save(newOrder);
+//                      cartRepository.findCartById(checkoutDto.getCartId()).get().getCartItems().clear();
+//                      cart.get().setCartItems(null);
+//                      cart.get().getCartItems().clear();
+//                        user.get().getCart().getCartItems().clear();
+                    return ResponseEntity.ok(newOrder);
                 }
-                throw new UserAlreadyExistException("Cart not found");
+                throw new UserAlreadyExistException("Action not allowed");
             }
-            throw new UserAlreadyExistException("Action not allowed!");
+            throw new UserAlreadyExistException("Cart not found");
         }
-        throw new UserAlreadyExistException("Unauthorized!");
+        throw new UserAlreadyExistException("Action not allowed!");
     }
 
     public ResponseEntity<Order> viewOrderByUserId(ViewOrderDto viewOrderDto, Long merchantId) throws UserAlreadyExistException{
         // checking to see if user is registered
-        Optional<UserAccount> merchant = userRepository.findById(merchantId);
-        if (merchant.isPresent()) {
-            // checking to see if user is a merchant
-            if (merchant.get().getRole().getName().equals("Merchant")) {
-                Optional<UserAccount> customer = userRepository.findById(viewOrderDto.getCustomerId());
-                if (customer.isPresent()){
-                    Optional<Order> gOrder = orderRepository.findById(customer.get().getCart().getOrder().getId());
-                    return gOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-                }
-                throw new UserAlreadyExistException("Customer not found");
+        UserAccount merchant = validateUser(merchantId).getBody();
+        if (merchant.getRole().getName().equals("Merchant")) {
+            Optional<UserAccount> customer = userRepository.findById(viewOrderDto.getCustomerId());
+            if (customer.isPresent()){
+                Optional<Order> gOrder = orderRepository.findById(customer.get().getCart().getOrder().getId());
+                return gOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
             }
-            throw new UserAlreadyExistException("Action not allowed!");
+            throw new UserAlreadyExistException("Customer not found");
         }
-        throw new UserAlreadyExistException("Unauthorized!");
+        throw new UserAlreadyExistException("Action not allowed!");
     }
 
     public ResponseEntity<Order> viewOrderById(Long orderId){
@@ -93,6 +84,16 @@ public class OrderService {
     public ResponseEntity<Order> changeOrderStatus(ViewOrderDto viewOrderDto, Long merchantId) throws UserAlreadyExistException{
         Order theOrder = viewOrderByUserId(viewOrderDto, merchantId).getBody();
         theOrder.setOrderStatus(OrderStatus.valueOf(viewOrderDto.getOrderStatus()));
+//        orderRepository.findById(theOrder.getId()).get().setOrderStatus(OrderStatus.valueOf(viewOrderDto.getOrderStatus()));
         return ResponseEntity.ok(theOrder);
+    }
+
+    public ResponseEntity<UserAccount> validateUser(Long userId) throws UserAlreadyExistException{
+        // checking to see if user is registered
+        Optional<UserAccount> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get());
+        }
+        throw new UserAlreadyExistException("Unauthorized!");
     }
 }
