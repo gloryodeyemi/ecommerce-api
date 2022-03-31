@@ -31,13 +31,13 @@ public class OrderController {
         return orderService.userCheckout(checkoutDto);
     }
 
-//    @GetMapping("/checkout/{merchantId}")
-//    public ResponseEntity<Order> addToCart(@RequestBody ViewOrderDto viewOrderDto, @PathVariable Long merchantId) throws UserAlreadyExistException {
-//        return orderService.viewOrder(viewOrderDto, merchantId);
-//    }
+    @GetMapping("/checkout/{merchantId}")
+    public ResponseEntity<Order> viewOrderByUserId(@RequestBody ViewOrderDto viewOrderDto, @PathVariable Long merchantId) throws UserAlreadyExistException {
+        return orderService.viewOrderByUserId(viewOrderDto, merchantId);
+    }
 
     @GetMapping("/{orderId}")
     public ResponseEntity<Order> viewOrderById(@PathVariable Long orderId) throws UserAlreadyExistException {
-        return orderService.viewOrder(orderId);
+        return orderService.viewOrderById(orderId);
     }
 }

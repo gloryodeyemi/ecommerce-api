@@ -66,28 +66,28 @@ public class OrderService {
         throw new UserAlreadyExistException("Unauthorized!");
     }
 
-//    public ResponseEntity<Order> viewOrder(ViewOrderDto viewOrderDto, Long merchantId) throws UserAlreadyExistException{
-//        // checking to see if user is registered
-//        Optional<UserAccount> merchant = userRepository.findById(merchantId);
-//        if (merchant.isPresent()) {
-//            // checking to see if user is a merchant
-//            if (merchant.get().getRole().getName().equals("Merchant")) {
-//                Optional<UserAccount> customer = userRepository.findById(viewOrderDto.getCustomerId());
-//                if (customer.isPresent()){
-//                    Optional<Order> gOrder = orderRepository.findOrderByOrderId(customer.get().getCart().getOrder().getId());
-//                    if (gOrder.isPresent()) {
-//                        return ResponseEntity.ok(gOrder.get());
-//                    }
-//                    return ResponseEntity.notFound().build();
-//                }
-//                throw new UserAlreadyExistException("Customer not found");
-//            }
-//            throw new UserAlreadyExistException("Action not allowed!");
-//        }
-//        throw new UserAlreadyExistException("Unauthorized!");
-//    }
+    public ResponseEntity<Order> viewOrderByUserId(ViewOrderDto viewOrderDto, Long merchantId) throws UserAlreadyExistException{
+        // checking to see if user is registered
+        Optional<UserAccount> merchant = userRepository.findById(merchantId);
+        if (merchant.isPresent()) {
+            // checking to see if user is a merchant
+            if (merchant.get().getRole().getName().equals("Merchant")) {
+                Optional<UserAccount> customer = userRepository.findById(viewOrderDto.getCustomerId());
+                if (customer.isPresent()){
+                    Optional<Order> gOrder = orderRepository.findById(customer.get().getCart().getOrder().getId());
+                    if (gOrder.isPresent()) {
+                        return ResponseEntity.ok(gOrder.get());
+                    }
+                    return ResponseEntity.notFound().build();
+                }
+                throw new UserAlreadyExistException("Customer not found");
+            }
+            throw new UserAlreadyExistException("Action not allowed!");
+        }
+        throw new UserAlreadyExistException("Unauthorized!");
+    }
 
-    public ResponseEntity<Order> viewOrder(Long orderId){
+    public ResponseEntity<Order> viewOrderById(Long orderId){
         Optional<Order> gOrder = orderRepository.findById(orderId);
         return gOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
