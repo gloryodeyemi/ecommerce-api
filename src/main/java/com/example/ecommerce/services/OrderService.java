@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,9 +40,20 @@ public class OrderService {
                         Order newOrder = new Order();
                         newOrder.setCart(cart.get().getUser().getCart());
                         newOrder.setOrderStatus(OrderStatus.ON_HOLD);
+                        Double sum = 0D;
+                        List<CartItems> cartItemsList = cart.get().getUser().getCart().getCartItems();
+                        if (!(cartItemsList == null)){
+                            for (CartItems cartIt: cartItemsList){
+                                sum += (cartIt.getProduct().getPrice() * cartIt.getQuantity());
+                            }
+                        }
+//                        cart.get().setTotalCost(sum);
+                        newOrder.getCart().setTotalCost(sum);
                         orderRepository.save(newOrder);
+//                        cartRepository.findCartById(checkoutDto.getCartId()).get().getCartItems().clear();
 //                        cart.get().setCartItems(null);
-                        cart.get().getCartItems().clear();
+//                        cart.get().getCartItems().clear();
+//                        user.get().getCart().getCartItems().clear();
                         return ResponseEntity.ok(newOrder);
                     }
                     throw new UserAlreadyExistException("Action not allowed");
