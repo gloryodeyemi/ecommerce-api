@@ -40,4 +40,9 @@ public class OrderController {
     public ResponseEntity<Order> viewOrderById(@PathVariable Long orderId) throws UserAlreadyExistException {
         return orderService.viewOrderById(orderId);
     }
+
+    @PatchMapping("/change-status/{merchantId}")
+    public ResponseEntity<Order> changeStatus(@RequestBody ViewOrderDto viewOrderDto, @PathVariable Long merchantId) throws UserAlreadyExistException {
+        return orderService.changeOrderStatus(viewOrderDto, merchantId);
+    }
 }

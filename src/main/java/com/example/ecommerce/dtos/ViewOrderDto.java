@@ -6,4 +6,5 @@ import lombok.Setter;
 @Getter @Setter
 public class ViewOrderDto {
     private Long customerId;
+    private String orderStatus;
 }

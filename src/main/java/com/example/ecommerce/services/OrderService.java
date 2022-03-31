@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.PushBuilder;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,10 +76,7 @@ public class OrderService {
                 Optional<UserAccount> customer = userRepository.findById(viewOrderDto.getCustomerId());
                 if (customer.isPresent()){
                     Optional<Order> gOrder = orderRepository.findById(customer.get().getCart().getOrder().getId());
-                    if (gOrder.isPresent()) {
-                        return ResponseEntity.ok(gOrder.get());
-                    }
-                    return ResponseEntity.notFound().build();
+                    return gOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
                 }
                 throw new UserAlreadyExistException("Customer not found");
             }
@@ -90,5 +88,11 @@ public class OrderService {
     public ResponseEntity<Order> viewOrderById(Long orderId){
         Optional<Order> gOrder = orderRepository.findById(orderId);
         return gOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    public ResponseEntity<Order> changeOrderStatus(ViewOrderDto viewOrderDto, Long merchantId) throws UserAlreadyExistException{
+        Order theOrder = viewOrderByUserId(viewOrderDto, merchantId).getBody();
+        theOrder.setOrderStatus(OrderStatus.valueOf(viewOrderDto.getOrderStatus()));
+        return ResponseEntity.ok(theOrder);
     }
 }
