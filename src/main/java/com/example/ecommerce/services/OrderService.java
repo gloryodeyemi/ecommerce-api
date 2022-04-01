@@ -4,6 +4,7 @@ import com.example.ecommerce.dtos.CheckoutDto;
 import com.example.ecommerce.dtos.ViewOrderDto;
 import com.example.ecommerce.exceptions.UserAlreadyExistException;
 import com.example.ecommerce.models.*;
+import com.example.ecommerce.repositories.CartItemRepository;
 import com.example.ecommerce.repositories.CartRepository;
 import com.example.ecommerce.repositories.OrderRepository;
 import com.example.ecommerce.repositories.UserRepository;
@@ -23,6 +24,9 @@ public class OrderService {
 
     @Autowired
     CartRepository cartRepository;
+
+    @Autowired
+    CartItemRepository cartItemRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -48,12 +52,17 @@ public class OrderService {
                         }
                     }
                     newOrder.getCart().setTotalCost(sum);
-                    orderRepository.save(newOrder);
+                    Order orderNew = orderRepository.save(newOrder);
 //                      cartRepository.findCartById(checkoutDto.getCartId()).get().getCartItems().clear();
 //                      cart.get().setCartItems(null);
 //                      cart.get().getCartItems().clear();
+//                      cartRepository.save(cart);
+                    for (CartItems cartIt: cartItemsList){
+                        cartIt.setItemStatus(ItemStatus.CHECKED_OUT);
+                        cartItemRepository.save(cartIt);
+                    }
 //                        user.get().getCart().getCartItems().clear();
-                    return ResponseEntity.ok(newOrder);
+                    return ResponseEntity.ok(orderNew);
                 }
                 throw new UserAlreadyExistException("Action not allowed");
             }
@@ -84,6 +93,7 @@ public class OrderService {
     public ResponseEntity<Order> changeOrderStatus(ViewOrderDto viewOrderDto, Long merchantId) throws UserAlreadyExistException{
         Order theOrder = viewOrderByUserId(viewOrderDto, merchantId).getBody();
         theOrder.setOrderStatus(OrderStatus.valueOf(viewOrderDto.getOrderStatus()));
+        orderRepository.save(theOrder);
 //        orderRepository.findById(theOrder.getId()).get().setOrderStatus(OrderStatus.valueOf(viewOrderDto.getOrderStatus()));
         return ResponseEntity.ok(theOrder);
     }

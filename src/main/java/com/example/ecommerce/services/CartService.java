@@ -2,10 +2,7 @@ package com.example.ecommerce.services;
 
 import com.example.ecommerce.dtos.AddToCartDto;
 import com.example.ecommerce.exceptions.UserAlreadyExistException;
-import com.example.ecommerce.models.Cart;
-import com.example.ecommerce.models.CartItems;
-import com.example.ecommerce.models.Product;
-import com.example.ecommerce.models.UserAccount;
+import com.example.ecommerce.models.*;
 import com.example.ecommerce.repositories.CartItemRepository;
 import com.example.ecommerce.repositories.CartRepository;
 import com.example.ecommerce.repositories.ProductRepository;
@@ -51,6 +48,7 @@ public class CartService {
                         Optional<Product> product = productRepository.findProductById(addToCartDto.getProductId());
                         if (product.isPresent()){
                             cartItems.setProduct(product.get());
+                            cartItems.setItemStatus(ItemStatus.PENDING);
                             cartItemRepository.save(cartItems);
                             return ResponseEntity.ok(cartItems);
                         }

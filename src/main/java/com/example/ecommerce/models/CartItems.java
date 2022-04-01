@@ -26,6 +26,8 @@ public class CartItems {
     private Product product;
     private Integer quantity;
 
+    private ItemStatus itemStatus;
+
     @CreationTimestamp
     private Timestamp dateCreated;
     @UpdateTimestamp
