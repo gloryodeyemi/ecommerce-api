@@ -8,12 +8,10 @@ import com.example.ecommerce.repositories.CartItemRepository;
 import com.example.ecommerce.repositories.CartRepository;
 import com.example.ecommerce.repositories.OrderRepository;
 import com.example.ecommerce.repositories.UserRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.PushBuilder;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,10 +51,6 @@ public class OrderService {
                     }
                     newOrder.getCart().setTotalCost(sum);
                     Order orderNew = orderRepository.save(newOrder);
-//                      cartRepository.findCartById(checkoutDto.getCartId()).get().getCartItems().clear();
-//                      cart.get().setCartItems(null);
-//                      cart.get().getCartItems().clear();
-//                      cartRepository.save(cart);
                     for (CartItems cartIt: cartItemsList){
                         cartIt.setItemStatus(ItemStatus.CHECKED_OUT);
                         cartItemRepository.save(cartIt);
@@ -94,7 +88,6 @@ public class OrderService {
         Order theOrder = viewOrderByUserId(viewOrderDto, merchantId).getBody();
         theOrder.setOrderStatus(OrderStatus.valueOf(viewOrderDto.getOrderStatus()));
         orderRepository.save(theOrder);
-//        orderRepository.findById(theOrder.getId()).get().setOrderStatus(OrderStatus.valueOf(viewOrderDto.getOrderStatus()));
         return ResponseEntity.ok(theOrder);
     }
 
